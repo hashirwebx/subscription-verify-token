@@ -1,20 +1,22 @@
 export default function handler(req, res) {
-    const VERIFY_TOKEN = 'https://whatsappsubscriptionmanagementsyste-flax.vercel.app/';
+    const VERIFY_TOKEN = "subtrack_verify_token_123";
 
-    if (req.method === 'GET') {
-        const mode = req.query['hub.mode'];
-        const token = req.query['hub.verify_token'];
-        const challenge = req.query['hub.challenge'];
+    // Meta webhook verification
+    if (req.method === "GET") {
+        const mode = req.query["hub.mode"];
+        const token = req.query["hub.verify_token"];
+        const challenge = req.query["hub.challenge"];
 
-        if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-            res.status(200).send(challenge);
+        if (mode === "subscribe" && token === VERIFY_TOKEN) {
+            return res.status(200).send(challenge);
         } else {
-            res.status(403).send('Forbidden');
+            return res.status(403).send("Verification failed");
         }
-    } else if (req.method === 'POST') {
-        console.log('Incoming WhatsApp message:', req.body);
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(405);
+    }
+
+    // Receive messages
+    if (req.method === "POST") {
+        console.log("Webhook event:", req.body);
+        return res.sendStatus(200);
     }
 }
